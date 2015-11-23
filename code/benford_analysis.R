@@ -99,4 +99,7 @@ country.count <- country.count[order(country.count$Freq,decreasing=TRUE),]
 org.count <- as.data.frame(table(suspects$transaction_provider.org))
 org.count <- org.count[order(org.count$Freq,decreasing=TRUE),]
 
+duplicates <- getDuplicates(benford.data, benfords,how.many=2)
+duplicates
+
 
