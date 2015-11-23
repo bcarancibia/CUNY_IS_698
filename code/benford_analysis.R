@@ -12,6 +12,10 @@ require(BenfordTests)
 
 df <- read.csv("/users/bcarancibia/transaction.csv", header=TRUE)
 
+colSums(is.na(df))
+isna <- 107347 + 77068 + 1830 + 352188 + 207004 + 106 + 129869 + 471395 + 414617+471+395 + 100 + 421506+398960+339
+total <- 471395*74
+
 vars <- c("transaction.type", "default.currency", "transaction.value", "transaction_value_value.date", "transaction_provider.org", 
           "transaction_receiver.org", "reporting.org", "title", "description","start.planned", "end.planned", "start.actual", "end.actual",
           "recipient.country","sector.vocabulary")
@@ -76,24 +80,23 @@ unique(benfords$recipient.country)
 summary(benfords$usd.conversion)
 
 #Benford converted
-benford.data <- benford(benfords$usd.conversion, number.of.digits = 2)
+benford.data <- benford(benfords$usd.conversion, number.of.digits = 2, sign="both")
 
 plot(benford.data)
 
-benford.data
+print(benford.data)
 
-suspects <- getSuspects(benford.data, benfords)
+head(suspectsTable(benford.data), 10)
+
+head(duplicatesTable(benford.data), 10)
+
+suspects <- getSuspects(benford.data, benfords, how.many=2)
 suspects
 
+country.count <- as.data.frame(table(suspects$recipient.country))
+country.count <- country.count[order(country.count$Freq,decreasing=TRUE),]
 
-#Benford Original
-benford.original.data <- benford(benfords$transaction.value)
-
-plot(benford.original.data)
-
-benford.original.data
-
-suspects.original <- getSuspects(benford.original.data, benfords)
-suspects.original
+org.count <- as.data.frame(table(suspects$transaction_provider.org))
+org.count <- org.count[order(org.count$Freq,decreasing=TRUE),]
 
 
