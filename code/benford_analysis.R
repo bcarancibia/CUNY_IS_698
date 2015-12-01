@@ -46,7 +46,7 @@ blank <- subset(data, data$default.currency=="")
 
 
 EUR$usd.conversion <- (EUR$transaction.value*1.06)
-USD$usd.conversion <- USD$transaction.value
+USD$usd.conversion <- (USD$transaction.value)
 XDR$usd.conversion <- (XDR$transaction.value*1.38)
 AUD$usd.conversion <- (AUD$transaction.value*0.72)
 CAD$usd.conversion <- (CAD$transaction.value*0.75)
@@ -64,7 +64,7 @@ SLL$usd.conversion <- (SLL$transaction.value*0.00023)
 ZAR$usd.conversion <- (ZAR$transaction.value*0.072)
 GHS$usd.conversion <- (GHS$transaction.value*0.26)
 INR$usd.conversion <- (INR$transaction.value*0.015)
-blank$usd.conversion <- blank$transaction.value
+blank$usd.conversion <- (blank$transaction.value)
 
 clean.data <- rbind(EUR, USD, XDR, AUD, CAD, CHF, DKK, GBP, JPY, NZD, NOK, XBT, UGX, ETB, ZMK, SLL, ZAR, GHS, INR, blank)
 
@@ -101,5 +101,34 @@ org.count <- org.count[order(org.count$Freq,decreasing=TRUE),]
 
 duplicates <- getDuplicates(benford.data, benfords,how.many=2)
 duplicates
+
+########take data and remove the blanks from country and organizations
+
+benfords2 <- subset(benfords, benfords$recipient.country!="" | benfords$recipient.country!=" " )
+benfords2 <- subset(benfords2, benfords$transaction_provider.org!="")
+
+benford2.data <- benford(benfords2$usd.conversion, number.of.digits = 3, sign="both")
+
+plot(benford2.data)
+
+print(benford2.data)
+
+head(suspectsTable(benford2.data), 10)
+
+head(duplicatesTable(benford2.data), 10)
+
+suspects <- getSuspects(benford2.data, benfords2, how.many=2)
+suspects <- subset(suspects, suspects$recipient.country!="")
+
+country.count <- as.data.frame(table(suspects$recipient.country))
+country.count <- country.count[order(country.count$Freq,decreasing=TRUE),]
+
+org.count <- as.data.frame(table(suspects$transaction_provider.org))
+org.count <- org.count[order(org.count$Freq,decreasing=TRUE),]
+
+duplicates <- getDuplicates(benford.data, benfords,how.many=2)
+duplicates
+
+
 
 
