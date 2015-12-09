@@ -107,7 +107,7 @@ duplicates
 benfords2 <- subset(benfords, benfords$recipient.country!="" | benfords$recipient.country!=" " )
 benfords2 <- subset(benfords2, benfords$transaction_provider.org!="")
 
-benford2.data <- benford(benfords2$usd.conversion, number.of.digits = 3, sign="both")
+benford2.data <- benford(benfords2$usd.conversion, number.of.digits = 2, sign="both")
 
 plot(benford2.data)
 
